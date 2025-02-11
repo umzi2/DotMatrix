@@ -27,7 +27,7 @@ jobs:
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels
+          name: wheels-linux-${{ matrix.target }}-py${{ matrix.py }}
           path: dist
 
   windows:
@@ -50,7 +50,7 @@ jobs:
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels
+          name: wheels-windows-${{ matrix.target }}-py${{ matrix.py }}
           path: dist
 
   macos:
@@ -72,7 +72,7 @@ jobs:
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels
+          name: wheels-macos-${{ matrix.target }}-py${{ matrix.py }}
           path: dist
 
   sdist:
@@ -92,7 +92,7 @@ jobs:
       - name: Upload sdist
         uses: actions/upload-artifact@v4
         with:
-          name: wheels
+          name: wheels-sdist
           path: dist
 
   release:
@@ -102,26 +102,23 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        
+      
       - name: Set up Python environment
         run: python3 -m venv venv
-
+      
       - name: Activate virtual environment
         run: |
           source venv/bin/activate
           pip install --upgrade pip
-
+      
       - name: Install dependencies
         run: |
           source venv/bin/activate
           pip install maturin cffi patchelf
-
+      
       - name: Download built artifacts
         uses: actions/download-artifact@v3
-        with:
-          name: wheels
-          path: dist
-
+      
       - name: Publish to PyPI
         run: |
           source venv/bin/activate
