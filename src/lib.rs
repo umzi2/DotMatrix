@@ -26,7 +26,7 @@ fn screentone_mask(
 
 /// A Python module implemented in Rust.
 #[pymodule]
-fn dot_matrix(m: &Bound<'_, PyModule>) -> PyResult<()> {
+fn pepematrix(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(screentone_mask, m)?)?;
     m.add_class::<TypeDot>()?;
     Ok(())
