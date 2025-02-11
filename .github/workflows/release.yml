@@ -1,11 +1,8 @@
 name: release
-
 on:
   workflow_dispatch:
-
 permissions:
   contents: read
-
 jobs:
   linux:
     runs-on: ubuntu-latest
@@ -27,9 +24,8 @@ jobs:
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-linux-${{ matrix.target }}-py${{ matrix.py }}
+          name: wheels-linux-${{ matrix.target }}-${{ matrix.py }}
           path: dist
-
   windows:
     runs-on: windows-latest
     strategy:
@@ -50,9 +46,8 @@ jobs:
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-windows-${{ matrix.target }}-py${{ matrix.py }}
+          name: wheels-windows-${{ matrix.target }}-${{ matrix.py }}
           path: dist
-
   macos:
     runs-on: macos-latest
     strategy:
@@ -72,9 +67,8 @@ jobs:
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-macos-${{ matrix.target }}-py${{ matrix.py }}
+          name: wheels-macos-${{ matrix.target }}-${{ matrix.py }}
           path: dist
-
   sdist:
     runs-on: ubuntu-latest
     steps:
@@ -94,7 +88,6 @@ jobs:
         with:
           name: wheels-sdist
           path: dist
-
   release:
     name: Release
     runs-on: ubuntu-latest
@@ -102,23 +95,24 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
       - name: Set up Python environment
         run: python3 -m venv venv
-      
       - name: Activate virtual environment
         run: |
           source venv/bin/activate
           pip install --upgrade pip
-      
       - name: Install dependencies
         run: |
           source venv/bin/activate
           pip install maturin cffi patchelf
-      
-      - name: Download built artifacts
-        uses: actions/download-artifact@v3
-      
+      - name: Create dist directory
+        run: mkdir -p dist
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          path: dist
+          merge-multiple: true
       - name: Publish to PyPI
         run: |
           source venv/bin/activate
