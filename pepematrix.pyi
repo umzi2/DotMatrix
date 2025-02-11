@@ -18,4 +18,4 @@ def screentone_mask(
     dot_size: int,
     angle: Optional[float] = 0.0,
     dot_type: Optional[TypeDot] = TypeDot.CIRCLE
-)
+)->np.ndarray:...
